@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"appwrite": "^9.0.0"
+		"appwrite": "^10.0.0-RC1",
+		"sweetalert2": "^11.4.32"
 	}
 }

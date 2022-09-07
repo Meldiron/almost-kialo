@@ -1,0 +1,19 @@
+{
+    "projectId": "almostKialo",
+    "projectName": "Almost Kialo",
+    "functions": [
+        {
+            "$id": "onPrefsUpdate",
+            "name": "onPrefsUpdate",
+            "runtime": "node-16.0",
+            "path": "functions/onPrefsUpdate",
+            "entrypoint": "src/index.js",
+            "execute": [],
+            "events": [
+                "users.*.update.prefs"
+            ],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
