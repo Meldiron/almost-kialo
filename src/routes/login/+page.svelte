@@ -4,7 +4,7 @@
 
 <section class="flex flex-col space-y-6 md:space-y-10 py-10">
 	<h1
-		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-4xl lg:text-5xl"
+		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-slate-900 md:text-4xl lg:text-5xl"
 	>
 		Let's Login First!
 	</h1>

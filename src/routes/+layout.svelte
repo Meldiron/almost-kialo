@@ -11,6 +11,7 @@
 	import { afterNavigate, goto } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { langsStore } from '$lib/langsStore';
 
 	const pages = [
 		{
@@ -30,11 +31,11 @@
 	let menuOpened = false;
 	let isReady = false;
 
-	let languages: Models.Language[] = [];
+	// Navigation guard logic
 
 	onMount(async () => {
 		await AppwriteService.fetchAccount();
-		languages = await AppwriteService.getLanguages();
+		await AppwriteService.fetchLanguages();
 
 		accountStore.subscribe(() => {
 			if ($page.routeId) {
@@ -82,6 +83,7 @@
 	afterNavigate(async (nav) => {
 		if (!isReady) {
 			await AppwriteService.fetchAccount();
+			await AppwriteService.fetchLanguages();
 
 			isReady = true;
 		}
@@ -92,6 +94,38 @@
 
 		return guardRoute(nav.to.routeId);
 	});
+
+	// New Discussion Modal logic
+
+	let newDiscussionTitle = '';
+	let newDiscussionDescription = '';
+	let newDiscussionPrivate = false;
+	let newDiscussionLang = 'en';
+	let newDiscussionTags = '';
+
+	async function createDiscussion() {
+		const discussion = await AppwriteService.createDiscussion(
+			newDiscussionTitle,
+			newDiscussionDescription,
+			undefined,
+			newDiscussionPrivate,
+			newDiscussionLang,
+			false,
+			newDiscussionTags.split(',')
+		);
+
+		if (discussion) {
+			newDiscussionTitle = '';
+			newDiscussionDescription = '';
+			newDiscussionPrivate = false;
+			newDiscussionLang = 'en';
+			newDiscussionTags = '';
+
+			modalStore.set(false);
+
+			goto('/discussions/' + discussion.$id);
+		}
+	}
 </script>
 
 <nav class="bg-white border-slate-200 px-2 sm:px-4 py-2.5 shadow-sm">
@@ -129,7 +163,7 @@
 					<button
 						on:click={AppwriteService.logout}
 						type="button"
-						class="py-2.5 px-5 mr-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 inline-flex items-center"
+						class="py-2.5 px-5 mr-2 text-sm font-medium text-slate-900 bg-white rounded-lg border border-slate-200 hover:bg-slate-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 inline-flex items-center"
 					>
 						Sign Out
 					</button>
@@ -200,7 +234,7 @@
 	{:else}
 		<div role="status" class="flex justify-center">
 			<svg
-				class="inline mr-2 w-10 h-10 text-gray-200 animate-spin fill-blue-600"
+				class="inline mr-2 w-10 h-10 text-slate-200 animate-spin fill-blue-600"
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
@@ -223,7 +257,7 @@
 	<footer
 		class="mb-6 p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6"
 	>
-		<span class="text-sm text-gray-500 sm:text-center"
+		<span class="text-sm text-slate-500 sm:text-center"
 			>Made with ♥️ and <a href="https://appwrite.io/">
 				<svg
 					class="w-[24px] mt-[-5px] inline animate-bounce"
@@ -249,7 +283,7 @@
 			</a>
 			by <a href="https://matejbaco.eu/" class="hover:underline">Matej Bačo</a>.
 		</span>
-		<ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 sm:mt-0">
+		<ul class="flex flex-wrap items-center mt-3 text-sm text-slate-500 sm:mt-0">
 			<li>
 				<a href="/about" class="mr-4 hover:underline md:mr-6 ">About</a>
 			</li>
@@ -263,7 +297,7 @@
 		<button
 			on:click={AppwriteService.logout}
 			type="button"
-			class="hover:underline text-sm font-medium text-gray-500 inline-flex items-center"
+			class="hover:underline text-sm font-medium text-slate-500 inline-flex items-center"
 		>
 			Sign Out
 		</button>
@@ -274,7 +308,7 @@
 	<div class=" z-[100] fixed inset-0 bg-black bg-opacity-20">
 		<div role="status" class="w-full h-full flex justify-center items-center">
 			<svg
-				class="inline mr-2 w-10 h-10 text-gray-600 animate-spin fill-gray-400"
+				class="inline mr-2 w-10 h-10 text-slate-600 animate-spin fill-slate-400"
 				viewBox="0 0 100 101"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
@@ -305,7 +339,7 @@
 				<button
 					on:click={() => modalStore.set(false)}
 					type="button"
-					class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center "
+					class="absolute top-3 right-2.5 text-slate-400 bg-transparent hover:bg-slate-200 hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center "
 					data-modal-toggle="authentication-modal"
 				>
 					<svg
@@ -323,42 +357,48 @@
 					<span class="sr-only">Close modal</span>
 				</button>
 				<div class="py-6 px-6 lg:px-8">
-					<h3 class="mb-4 text-xl font-medium text-gray-900">Create a New Discussion</h3>
-					<form class="space-y-6" action="#">
+					<h3 class="mb-4 text-xl font-medium text-slate-900">Create a New Discussion</h3>
+					<form class="space-y-6" on:submit|preventDefault={createDiscussion}>
 						<div>
-							<label for="title" class="block mb-2 text-sm font-medium text-gray-900">Title</label>
+							<label for="title" class="block mb-2 text-sm font-medium text-slate-900">Title</label>
 							<input
+								bind:value={newDiscussionTitle}
 								type="text"
 								name="title"
 								id="title"
-								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+								maxlength="255"
+								class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
 								placeholder="Discussion topic ..."
 								required={true}
 							/>
 						</div>
 
 						<div>
-							<label for="description" class="block mb-2 text-sm font-medium text-gray-900 "
+							<label for="description" class="block mb-2 text-sm font-medium text-slate-900 "
 								>Description</label
 							>
 							<textarea
+								bind:value={newDiscussionDescription}
 								id="description"
+								maxlength="1024"
+								required={true}
 								rows="4"
-								class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+								class="block p-2.5 w-full text-sm text-slate-900 bg-slate-50 rounded-lg border border-slate-300 focus:ring-blue-500 focus:border-blue-500 "
 								placeholder="Your take on the topic ..."
 							/>
 						</div>
 
 						<div>
-							<label for="language" class="block mb-2 text-sm font-medium text-gray-900 "
+							<label for="language" class="block mb-2 text-sm font-medium text-slate-900 "
 								>Select a language</label
 							>
 							<select
+								bind:value={newDiscussionLang}
 								id="language"
-								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+								required={true}
+								class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
 							>
-								<option selected>Choose a language</option>
-								{#each languages as language}
+								{#each $langsStore ?? [] as language}
 									<option value={language.code}>{language.name} ({language.nativeName})</option>
 								{/each}
 							</select>
@@ -368,18 +408,18 @@
 							<div class="flex">
 								<div class="flex items-center h-5">
 									<input
+										bind:checked={newDiscussionPrivate}
 										id="private-checkbox"
 										aria-describedby="private-checkbox-text"
 										type="checkbox"
-										value=""
-										class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 "
+										class="w-4 h-4 text-blue-600 bg-slate-100 rounded border-slate-300 focus:ring-blue-500 "
 									/>
 								</div>
 								<div class="ml-2 text-sm">
-									<label for="private-checkbox" class="font-medium text-gray-900 "
+									<label for="private-checkbox" class="font-medium text-slate-900 "
 										>Mark as private</label
 									>
-									<p id="private-checkbox-text" class="text-xs font-normal text-gray-500 ">
+									<p id="private-checkbox-text" class="text-xs font-normal text-slate-500 ">
 										Private discussions will not appear on the homepage
 									</p>
 								</div>
@@ -387,14 +427,16 @@
 						</div>
 
 						<div>
-							<label for="tags" class="block mb-2 text-sm font-medium text-gray-900">Tags</label>
+							<label for="tags" class="block mb-2 text-sm font-medium text-slate-900">Tags</label>
 							<input
+								bind:value={newDiscussionTags}
 								type="text"
 								name="tags"
 								id="tags"
-								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+								class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
 								placeholder="comma,separated,tags"
 								required={true}
+								maxlength="1024"
 							/>
 						</div>
 

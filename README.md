@@ -1,4 +1,42 @@
-# create-svelte
+TODO:
+
+- Function to aggregate positive/negative on discussion
+- Search queries (tags) doesnt seem to work
+- Detail page for discussioin
+  - Start new discussion
+  - Detail about user (username, photo)
+  - When posted
+  - List comments + pagination
+  - Delete discussion (moderators can anyone, user can their only)
+
+# 💬 Almost Kialo
+
+## 🛠️ Setup
+
+1. Setup [Appwrite](https://appwrite.io/) 1.0
+2. Use [Appwrite CLI](https://appwrite.io/docs/command-line) and run `appwrite deploy collections` and `appwrite deploy functions`
+3. Create `Internal` API key, and configure `APPWRITE_FUNCTION_API_KEY` and `APPWRITE_FUNCTION_ENDPOINT` on all functions
+4. Create team `Moderators` with custom ID `mods`
+5. Configure GitHub OAuth
+
+## 🏠 Development
+
+1. Install dependencies `npm install`
+2. Start Svelte Kit server `npm run dev`
+
+## 🚀 Production
+
+1. Build project `npm run build`
+
+## 🧑‍🚒 Administration
+
+1. Add trusted users to `mods` team. They can delete any discussion.
+
+## 🤔 Opened questions
+
+- Users (and mods) can update discussions. Not sure how to disallow that
+
+## 🤖 Svelte Kit Generated Documentation
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 

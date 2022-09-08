@@ -8,12 +8,210 @@
             "runtime": "node-16.0",
             "path": "functions/onPrefsUpdate",
             "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
             "execute": [],
             "events": [
                 "users.*.update.prefs"
             ],
             "schedule": "",
             "timeout": 15
+        },
+        {
+            "$id": "onDiscussionCreate",
+            "name": "onDiscussionCreate",
+            "runtime": "node-16.0",
+            "path": "functions/onDiscussionCreate",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [
+                "databases.main.collections.discussions.documents.*.create"
+            ],
+            "schedule": "",
+            "timeout": 15
+        }
+    ],
+    "collections": [
+        {
+            "$id": "profiles",
+            "$createdAt": "2022-09-07T17:42:30.706+00:00",
+            "$updatedAt": "2022-09-07T17:43:05.348+00:00",
+            "$permissions": [
+                "read(\"guests\")"
+            ],
+            "databaseId": "main",
+            "name": "Profiles",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "nickname",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "discussions",
+            "$createdAt": "2022-09-08T12:26:00.654+00:00",
+            "$updatedAt": "2022-09-08T12:29:45.775+00:00",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"any\")",
+                "update(\"team:mods\")",
+                "delete(\"team:mods\")"
+            ],
+            "databaseId": "main",
+            "name": "Discussions",
+            "enabled": true,
+            "documentSecurity": true,
+            "attributes": [
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "languageCode",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 8,
+                    "default": null
+                },
+                {
+                    "key": "parentId",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "title",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 255,
+                    "default": null
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 1024,
+                    "default": null
+                },
+                {
+                    "key": "isPrivate",
+                    "type": "boolean",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "isNegative",
+                    "type": "boolean",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "default": null
+                },
+                {
+                    "key": "tags",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": true,
+                    "size": 32,
+                    "default": null
+                },
+                {
+                    "key": "totalPositive",
+                    "type": "integer",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "min": -9223372036854776000,
+                    "max": 9223372036854776000,
+                    "default": null
+                },
+                {
+                    "key": "totalNegative",
+                    "type": "integer",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "min": -9223372036854776000,
+                    "max": 9223372036854776000,
+                    "default": null
+                },
+                {
+                    "key": "tagsSearch",
+                    "type": "string",
+                    "status": "available",
+                    "required": true,
+                    "array": false,
+                    "size": 320,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "languageCode",
+                    "type": "key",
+                    "status": "available",
+                    "attributes": [
+                        "languageCode"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "userId",
+                    "type": "key",
+                    "status": "available",
+                    "attributes": [
+                        "userId"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "tagsSearch",
+                    "type": "fulltext",
+                    "status": "available",
+                    "attributes": [
+                        "tagsSearch"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
         }
     ]
 }

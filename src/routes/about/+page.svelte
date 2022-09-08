@@ -1,17 +1,17 @@
 <section class="flex flex-col space-y-6 md:space-y-10 py-10">
 	<h1
-		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-4xl lg:text-5xl"
+		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-slate-900 md:text-4xl lg:text-5xl"
 	>
 		What Is Almost Kialo?
 	</h1>
 
-	<p class="text-lg font-normal text-gray-500 lg:text-xl text-center">
+	<p class="text-lg font-normal text-slate-500 lg:text-xl text-center">
 		It's like an online argument where only valid points get attention!
 	</p>
 
-	<div class="h-1 bg-gray-200 rounded-full" />
+	<div class="h-1 bg-slate-200 rounded-full" />
 
-	<p class="font-normal text-gray-900">
+	<p class="font-normal text-slate-900">
 		Almost Kialo is a social platform where you can ask <b>ANYTHING</b>! Others can express
 		themselves by either agreeing or disagreeing with you. Pick a side based on constructive
 		comments that describe their reasoning. Don't worry about unmeaningful hate! Each comment
@@ -23,7 +23,7 @@
 		<img src="/screenshot_about.png" alt="Showcase creenshot" />
 	</div>
 
-	<p class="font-normal text-gray-900">
+	<p class="font-normal text-slate-900">
 		Idea for this project came from real project <a
 			href="https://www.kialo.com/"
 			class="hover:underline text-blue-500">Kialo</a
@@ -33,7 +33,7 @@
 		<a href="https://appwrite.io/" class="text-blue-500 hover:underline">Appwrite</a>.
 	</p>
 
-	<div class="h-1 bg-gray-200 rounded-full" />
+	<div class="h-1 bg-slate-200 rounded-full" />
 
 	<div class="flex justify-center">
 		<a

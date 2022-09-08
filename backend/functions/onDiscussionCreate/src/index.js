@@ -18,11 +18,11 @@ module.exports = async function (req, res) {
 
   const data = JSON.parse(req.env['APPWRITE_FUNCTION_EVENT_DATA'] ?? '{}');
 
-  const userId = data.$id;
-  const nickname = (data.prefs.profile.nickname ?? 'Anonymous').slice(0, 255);
+  const userId = req.env['APPWRITE_FUNCTION_USER_ID'];
+  const discussionId = data.$id;
 
   console.log("📝 User:", userId);
-  console.log("📝 Nickname:", nickname);
+  console.log("📝 Discussion:", discussionId);
 
   const database = new sdk.Databases(client);
 
@@ -38,26 +38,13 @@ module.exports = async function (req, res) {
       .setKey(req.env['APPWRITE_FUNCTION_API_KEY']);
   }
 
-  let profile = null;
-
-  try {
-    profile = await database.getDocument("main", "profiles", userId);
-  } catch (err) {
-    console.log(err);
-    // 404
-  }
-
-  if (profile) {
-    console.log("🤖 Updating profile ...");
-    await database.updateDocument("main", "profiles", userId, {
-      nickname
-    });
-  } else {
-    console.log("🤖 Creating profile ...");
-    await database.createDocument("main", "profiles", userId, {
-      nickname
-    });
-  }
+  console.log("🤖 Updating discussion ...");
+  await database.updateDocument("main", "discussions", discussionId, {
+    userId,
+    tagsSearch: data.tags.join(" "),
+    totalNegative: 0,
+    totalPositive: 0
+  });
 
   console.log("🥳 Done");
 

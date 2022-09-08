@@ -14,26 +14,26 @@
 
 <section class="flex flex-col space-y-6 md:space-y-10 py-10">
 	<h1
-		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-4xl lg:text-5xl"
+		class=" text-center text-3xl font-extrabold tracking-tight leading-none text-slate-900 md:text-4xl lg:text-5xl"
 	>
 		Finish Registration
 	</h1>
 
-	<p class="text-lg font-normal text-gray-500 lg:text-xl text-center">
+	<p class="text-lg font-normal text-slate-500 lg:text-xl text-center">
 		A few more information we need before finishing your account.
 	</p>
 
-	<div class="h-1 bg-gray-200 rounded-full" />
+	<div class="h-1 bg-slate-200 rounded-full" />
 
 	<form on:submit|preventDefault={onSubmit}>
-		<label for="nickname" class="block mb-2 font-medium text-gray-900">Nickname:</label>
+		<label for="nickname" class="block mb-2 font-medium text-slate-900">Nickname:</label>
 		<input
 			bind:value={nickname}
 			type="text"
 			required={true}
 			maxlength={255}
 			id="nickname"
-			class="block p-4 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 "
+			class="block p-4 w-full text-slate-900 bg-slate-50 rounded-lg border border-slate-300 sm:text-md focus:ring-blue-500 focus:border-blue-500 "
 		/>
 		<button
 			type="submit"
