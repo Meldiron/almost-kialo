@@ -8,8 +8,28 @@ TODO:
   - When posted
   - List comments + pagination
   - Delete discussion (moderators can anyone, user can their only)
+- Add screenshots to readme
+- Users (and mods) can update discussions. Not sure how to disallow that
 
 # 💬 Almost Kialo
+
+> It's like an online argument where only valid points get attention!
+
+Almost Kialo is a social platform where you can ask <b>ANYTHING</b>! Others can express
+themselves by either agreeing or disagreeing with you. Pick a side based on constructive
+comments that describe their reasoning. Don't worry about unmeaningful hate! Each comment
+creates a separate discussion that can be commented on too! A comment that no one agrees with is
+pushed down the list and becomes irrelevant.
+
+Idea for this project came from real project [Kialo](https://www.kialo.com/). Check them out, they are the same thing but much more sophisticated! We are in no way
+affiliated or connected to Kialo website. This application came into existance as a way to
+showcase amazing project that can be built using [Appwrite](https://appwrite.io/).
+
+## 🧰 Tech Stack
+
+- [Appwrite](https://appwrite.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Svelte Kit](https://kit.svelte.dev/)
 
 ## 🛠️ Setup
 
@@ -31,10 +51,6 @@ TODO:
 ## 🧑‍🚒 Administration
 
 1. Add trusted users to `mods` team. They can delete any discussion.
-
-## 🤔 Opened questions
-
-- Users (and mods) can update discussions. Not sure how to disallow that
 
 ## 🤖 Svelte Kit Generated Documentation
 
