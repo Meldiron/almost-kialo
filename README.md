@@ -11,6 +11,8 @@ TODO:
 - Add screenshots to readme
 - Users (and mods) can update discussions. Not sure how to disallow that
 
+![Almost Kialo Cover](static/cover.png)
+
 # 💬 Almost Kialo
 
 > It's like an online argument where only valid points get attention!
