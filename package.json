@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@tailwindcss/line-clamp": "^0.4.2",
 		"appwrite": "^10.0.0-RC1",
 		"sweetalert2": "^11.4.32"
 	}

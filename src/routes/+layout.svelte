@@ -2,8 +2,10 @@
 	import '../app.css';
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
+	import type { Models } from 'appwrite';
 	import { page } from '$app/stores';
 	import { accountStore } from '$lib/accountStore';
+	import { modalStore } from '$lib/modalStore';
 	import { loadingStore } from '$lib/loadingStore';
 	import { AppwriteService } from '$lib/appwrite';
 	import { afterNavigate, goto } from '$app/navigation';
@@ -28,8 +30,12 @@
 	let menuOpened = false;
 	let isReady = false;
 
+	let languages: Models.Language[] = [];
+
 	onMount(async () => {
 		await AppwriteService.fetchAccount();
+		languages = await AppwriteService.getLanguages();
+
 		accountStore.subscribe(() => {
 			if ($page.routeId) {
 				guardRoute($page.routeId);
@@ -47,7 +53,7 @@
 
 		// Guest checks
 
-		const mustBeGuest: string[] = [];
+		const mustBeGuest: string[] = ['login'];
 		if (mustBeGuest.includes(routeId) && isLoggedIn) {
 			return goto('/');
 		}
@@ -61,7 +67,7 @@
 
 		// Profile Checks
 
-		const mustBeProfile: string[] = ['', 'my-profile'];
+		const mustBeProfile: string[] = ['', 'my-profile', 'my-discussions'];
 		const cantBeProfile: string[] = ['onboarding'];
 
 		if (mustBeProfile.includes(routeId) && !hasProfile) {
@@ -76,6 +82,7 @@
 	afterNavigate(async (nav) => {
 		if (!isReady) {
 			await AppwriteService.fetchAccount();
+
 			isReady = true;
 		}
 
@@ -119,12 +126,6 @@
 						Sign in with Github
 					</button>
 				{:else if !$accountStore.prefs.profile}
-					<a
-						href="/onboarding"
-						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0"
-						>Finish Onboarding</a
-					>
-				{:else}
 					<button
 						on:click={AppwriteService.logout}
 						type="button"
@@ -132,6 +133,13 @@
 					>
 						Sign Out
 					</button>
+				{:else}
+					<button
+						on:click={() => modalStore.set(true)}
+						type="button"
+						class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0"
+						>Create Discussion</button
+					>
 				{/if}
 			{:else}
 				<div class="bg-slate-200 rounded-xl w-40 animate-pulse h-10" />
@@ -211,47 +219,59 @@
 	{/if}
 </main>
 
-<footer
-	class="mb-6 mx-auto max-w-3xl p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6"
->
-	<span class="text-sm text-gray-500 sm:text-center"
-		>Made with ♥️ and <a href="https://appwrite.io/">
-			<svg
-				class="w-[24px] mt-[-5px] inline animate-bounce"
-				width="30"
-				height="20"
-				viewBox="0 0 300 200"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					d="M299.384 100.21C299.384 155.211 254.798 199.799 199.795 199.799C174.248 199.799 150.949 190.177 133.319 174.365C161.561 161.65 181.222 133.262 181.222 100.282C181.222 67.259 161.512 38.842 133.211 26.151C150.856 10.281 174.196 0.622009 199.795 0.622009C254.798 0.622009 299.384 45.209 299.384 100.21Z"
-					fill="#F02E65"
-				/>
-				<path
-					d="M159.987 20.718C98.825 -25.503 10.561 11.816 1.114 87.895C-3.276 123.253 11.556 158.262 40.009 179.704C101.205 225.884 189.443 188.5 198.838 112.414C203.197 77.101 188.387 42.148 159.987 20.717V20.718ZM148.91 35.393C198.809 73.046 189.233 150.593 131.674 174.979C104.964 186.297 74.242 182.504 51.085 165.028C1.189 127.374 10.763 49.827 68.321 25.442C95.032 14.126 125.754 17.918 148.91 35.393Z"
-					fill="#F02E65"
-				/>
-				<path
-					d="M102.666 65.755C102.548 66.048 101.023 72.028 99.386 79.123C97.683 86.216 94.986 97.414 93.464 104.037C90.531 116.173 88.772 124.146 88.772 125.2C88.772 125.492 90.591 125.729 92.816 125.729H96.864L98.679 117.637C99.736 113.242 102.083 103.157 103.957 95.243C105.834 87.329 108.118 77.714 108.999 73.843C109.878 69.974 110.758 66.46 110.934 66.048C111.11 65.521 110.112 65.347 107.063 65.347C104.776 65.347 102.782 65.521 102.666 65.755ZM71.183 91.138L65.79 97.002L67.375 98.878C68.252 99.932 70.659 102.571 72.709 104.742L76.462 108.725H87.133L82.089 103.274C79.332 100.346 77.046 97.529 77.046 97.179C77.046 96.768 79.157 94.132 81.739 91.316C84.317 88.446 86.428 85.98 86.428 85.688C86.428 85.452 84.201 85.277 81.505 85.277H76.638L71.183 91.138ZM112.221 85.629C112.221 85.806 113.219 86.917 114.449 88.149C119.025 92.722 122.248 96.593 122.071 97.352C121.956 97.766 119.726 100.519 117.03 103.391L112.165 108.725H117.616L123.068 108.668L128.049 103.215C130.808 100.169 133.035 97.469 133.035 97.119C133.035 96.827 130.69 94.071 127.757 90.965L122.485 85.277H117.381C114.508 85.277 112.221 85.452 112.221 85.629Z"
-					fill="#F02E65"
-				/>
-			</svg>
-		</a>
-		by <a href="https://matejbaco.eu/" class="hover:underline">Matej Bačo</a>.
-	</span>
-	<ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 sm:mt-0">
-		<li>
-			<a href="/about" class="mr-4 hover:underline md:mr-6 ">About</a>
-		</li>
-		<li>
-			<a href="/contact" class="hover:underline">Contact</a>
-		</li>
-	</ul>
-</footer>
+<div class=" mx-auto max-w-3xl px-2 sm:px-4">
+	<footer
+		class="mb-6 p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6"
+	>
+		<span class="text-sm text-gray-500 sm:text-center"
+			>Made with ♥️ and <a href="https://appwrite.io/">
+				<svg
+					class="w-[24px] mt-[-5px] inline animate-bounce"
+					width="30"
+					height="20"
+					viewBox="0 0 300 200"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path
+						d="M299.384 100.21C299.384 155.211 254.798 199.799 199.795 199.799C174.248 199.799 150.949 190.177 133.319 174.365C161.561 161.65 181.222 133.262 181.222 100.282C181.222 67.259 161.512 38.842 133.211 26.151C150.856 10.281 174.196 0.622009 199.795 0.622009C254.798 0.622009 299.384 45.209 299.384 100.21Z"
+						fill="#F02E65"
+					/>
+					<path
+						d="M159.987 20.718C98.825 -25.503 10.561 11.816 1.114 87.895C-3.276 123.253 11.556 158.262 40.009 179.704C101.205 225.884 189.443 188.5 198.838 112.414C203.197 77.101 188.387 42.148 159.987 20.717V20.718ZM148.91 35.393C198.809 73.046 189.233 150.593 131.674 174.979C104.964 186.297 74.242 182.504 51.085 165.028C1.189 127.374 10.763 49.827 68.321 25.442C95.032 14.126 125.754 17.918 148.91 35.393Z"
+						fill="#F02E65"
+					/>
+					<path
+						d="M102.666 65.755C102.548 66.048 101.023 72.028 99.386 79.123C97.683 86.216 94.986 97.414 93.464 104.037C90.531 116.173 88.772 124.146 88.772 125.2C88.772 125.492 90.591 125.729 92.816 125.729H96.864L98.679 117.637C99.736 113.242 102.083 103.157 103.957 95.243C105.834 87.329 108.118 77.714 108.999 73.843C109.878 69.974 110.758 66.46 110.934 66.048C111.11 65.521 110.112 65.347 107.063 65.347C104.776 65.347 102.782 65.521 102.666 65.755ZM71.183 91.138L65.79 97.002L67.375 98.878C68.252 99.932 70.659 102.571 72.709 104.742L76.462 108.725H87.133L82.089 103.274C79.332 100.346 77.046 97.529 77.046 97.179C77.046 96.768 79.157 94.132 81.739 91.316C84.317 88.446 86.428 85.98 86.428 85.688C86.428 85.452 84.201 85.277 81.505 85.277H76.638L71.183 91.138ZM112.221 85.629C112.221 85.806 113.219 86.917 114.449 88.149C119.025 92.722 122.248 96.593 122.071 97.352C121.956 97.766 119.726 100.519 117.03 103.391L112.165 108.725H117.616L123.068 108.668L128.049 103.215C130.808 100.169 133.035 97.469 133.035 97.119C133.035 96.827 130.69 94.071 127.757 90.965L122.485 85.277H117.381C114.508 85.277 112.221 85.452 112.221 85.629Z"
+						fill="#F02E65"
+					/>
+				</svg>
+			</a>
+			by <a href="https://matejbaco.eu/" class="hover:underline">Matej Bačo</a>.
+		</span>
+		<ul class="flex flex-wrap items-center mt-3 text-sm text-gray-500 sm:mt-0">
+			<li>
+				<a href="/about" class="mr-4 hover:underline md:mr-6 ">About</a>
+			</li>
+			<li>
+				<a href="/contact" class="hover:underline">Contact</a>
+			</li>
+		</ul>
+	</footer>
+
+	<div class="flex justify-center">
+		<button
+			on:click={AppwriteService.logout}
+			type="button"
+			class="hover:underline text-sm font-medium text-gray-500 inline-flex items-center"
+		>
+			Sign Out
+		</button>
+	</div>
+</div>
 
 {#if $loadingStore}
-	<div class="fixed inset-0 bg-black bg-opacity-20">
+	<div class=" z-[100] fixed inset-0 bg-black bg-opacity-20">
 		<div role="status" class="w-full h-full flex justify-center items-center">
 			<svg
 				class="inline mr-2 w-10 h-10 text-gray-600 animate-spin fill-gray-400"
@@ -269,6 +289,123 @@
 				/>
 			</svg>
 			<span class="sr-only">Loading...</span>
+		</div>
+	</div>
+{/if}
+
+{#if $modalStore}
+	<div
+		tabindex="-1"
+		aria-hidden="true"
+		class=" overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full justify-center items-center bg-black bg-opacity-50"
+	>
+		<div class="mx-auto relative p-4 w-full max-w-md h-full md:h-auto">
+			<!-- Modal content -->
+			<div class="relative bg-white rounded-lg shadow">
+				<button
+					on:click={() => modalStore.set(false)}
+					type="button"
+					class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center "
+					data-modal-toggle="authentication-modal"
+				>
+					<svg
+						aria-hidden="true"
+						class="w-5 h-5"
+						fill="currentColor"
+						viewBox="0 0 20 20"
+						xmlns="http://www.w3.org/2000/svg"
+						><path
+							fill-rule="evenodd"
+							d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+							clip-rule="evenodd"
+						/></svg
+					>
+					<span class="sr-only">Close modal</span>
+				</button>
+				<div class="py-6 px-6 lg:px-8">
+					<h3 class="mb-4 text-xl font-medium text-gray-900">Create a New Discussion</h3>
+					<form class="space-y-6" action="#">
+						<div>
+							<label for="title" class="block mb-2 text-sm font-medium text-gray-900">Title</label>
+							<input
+								type="text"
+								name="title"
+								id="title"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+								placeholder="Discussion topic ..."
+								required={true}
+							/>
+						</div>
+
+						<div>
+							<label for="description" class="block mb-2 text-sm font-medium text-gray-900 "
+								>Description</label
+							>
+							<textarea
+								id="description"
+								rows="4"
+								class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 "
+								placeholder="Your take on the topic ..."
+							/>
+						</div>
+
+						<div>
+							<label for="language" class="block mb-2 text-sm font-medium text-gray-900 "
+								>Select a language</label
+							>
+							<select
+								id="language"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+							>
+								<option selected>Choose a language</option>
+								{#each languages as language}
+									<option value={language.code}>{language.name} ({language.nativeName})</option>
+								{/each}
+							</select>
+						</div>
+
+						<div>
+							<div class="flex">
+								<div class="flex items-center h-5">
+									<input
+										id="private-checkbox"
+										aria-describedby="private-checkbox-text"
+										type="checkbox"
+										value=""
+										class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 "
+									/>
+								</div>
+								<div class="ml-2 text-sm">
+									<label for="private-checkbox" class="font-medium text-gray-900 "
+										>Mark as private</label
+									>
+									<p id="private-checkbox-text" class="text-xs font-normal text-gray-500 ">
+										Private discussions will not appear on the homepage
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<div>
+							<label for="tags" class="block mb-2 text-sm font-medium text-gray-900">Tags</label>
+							<input
+								type="text"
+								name="tags"
+								id="tags"
+								class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+								placeholder="comma,separated,tags"
+								required={true}
+							/>
+						</div>
+
+						<button
+							type="submit"
+							class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center "
+							>Create Discussion</button
+						>
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 {/if}
