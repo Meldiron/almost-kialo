@@ -46,7 +46,8 @@ module.exports = async function (req, res) {
     totalPositive: 0
   }, [
     // This ensures proper permission on document. Update is not allowed
-    sdk.Permission.delete(sdk.Role.user(userId))
+    sdk.Permission.delete(sdk.Role.user(userId)),
+    sdk.Permission.read(sdk.Role.user(userId)), // Read needed because of bug in Appwrite - to delete, you also need read when documentSecurity=true
   ]);
 
   console.log("🥳 Done");

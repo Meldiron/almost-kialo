@@ -1,12 +1,6 @@
 TODO:
 
-- Appwrite Function to aggregate positive/negative on discussion
-- Appwrite Function on document delete, to delete all sub-discussions
 - Search queries (tags) doesnt seem to work (index too)
-- Detail page for discussioin
-  - Start new discussion (comment)
-  - List comments + pagination (reuse List component ideally, with small=true)
-- Add screenshots to readme
 
 ![Almost Kialo Cover](static/cover.png)
 
@@ -51,6 +45,16 @@ showcase amazing project that can be built using [Appwrite](https://appwrite.io/
 
 1. Add trusted users to `mods` team. They can delete any discussion
 2. On trusted user, set `isMod=true` their prefs
+
+## 🖼️ Screenshots
+
+![Screenshot](screenshots/ss1.png)
+![Screenshot](screenshots/ss2.png)
+![Screenshot](screenshots/ss3.png)
+![Screenshot](screenshots/ss4.png)
+![Screenshot](screenshots/ss5.png)
+![Screenshot](screenshots/ss6.png)
+![Screenshot](screenshots/ss7.png)
 
 ## 🤖 Svelte Kit Generated Documentation
 

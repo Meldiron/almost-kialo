@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	import { accountStore } from '$lib/accountStore';
 	import { AppwriteService } from '$lib/appwrite';
+	import DiscussionList from '$lib/components/DiscussionList.svelte';
 
+	// @ts-ignore
 	declare const moment: any;
-
-	import { onMount } from 'svelte';
-
-	/** @type {import('./$types').PageData} */
-	export let data;
 
 	let discussion: null | any = null;
 	let profile: null | any = null;
@@ -17,18 +15,83 @@
 	let isDetailOpened = false;
 	let showDeleteModal = false;
 
-	onMount(async () => {
-		discussion = await AppwriteService.getDiscussion(data.discussionId);
+	async function loadDiscussion() {
+		discussion = null;
+		profile = null;
+		isDetailOpened = false;
+		showDeleteModal = false;
+
+		discussion = await AppwriteService.getDiscussion($page.params.discussionId);
 		profile = await AppwriteService.getProfile(discussion.userId);
-	});
+	}
+
+	$: $page.params.discussionId, loadDiscussion();
 
 	async function deleteDiscussion() {
-		await AppwriteService.deleteDiscussion(discussion.$id);
-		goto('/');
+		const res = await AppwriteService.deleteDiscussion(discussion.$id);
+		showDeleteModal = false;
+		if (res) {
+			goto('/');
+		}
+	}
+
+	let commentDescription = '';
+	let commentIsNegative: any = undefined;
+
+	async function submitComment() {
+		const comment = await AppwriteService.createDiscussion(
+			'',
+			commentDescription,
+			discussion.$id,
+			discussion.languageCode,
+			commentIsNegative,
+			discussion.tags
+		);
+
+		if (comment) {
+			commentDescription = '';
+			commentIsNegative = undefined;
+
+			goto('/discussions/' + comment.$id);
+		}
 	}
 </script>
 
 {#if discussion && profile}
+	{#if discussion.parentId !== '_noParent'}
+		<div
+			id="alert-additional-content-1"
+			class="p-4 mb-4 border border-blue-300 rounded-lg bg-blue-50 "
+			role="alert"
+		>
+			<div class="flex items-center">
+				<svg
+					aria-hidden="true"
+					class="w-5 h-5 mr-2 text-blue-900"
+					fill="currentColor"
+					viewBox="0 0 20 20"
+					xmlns="http://www.w3.org/2000/svg"
+					><path
+						fill-rule="evenodd"
+						d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+						clip-rule="evenodd"
+					/></svg
+				>
+				<span class="sr-only">Info</span>
+				<h3 class="text-lg font-medium text-blue-900">This answers previous discussion!</h3>
+			</div>
+			<div class="flex mt-2 ">
+				<a
+					href={`/discussions/${discussion.parentId}`}
+					class="text-blue-900 bg-transparent border border-blue-900 hover:bg-blue-900 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-200 font-medium rounded-lg text-xs px-3 py-1.5 text-center "
+					data-dismiss-target="#alert-additional-content-1"
+					aria-label="Close"
+				>
+					View parent discussion
+				</a>
+			</div>
+		</div>
+	{/if}
 	<div class="p-6 bg-white rounded-lg border border-slate-200 shadow-md">
 		<h5 class="mb-2 text-2xl font-bold tracking-tight text-slate-900">
 			{discussion.title}
@@ -92,7 +155,7 @@
 
 		<div class="flex flex-col space-y-4">
 			<div>
-				<p class="mb-1 text-sm text-slate-400">Discussion started by:</p>
+				<p class="mb-1 text-sm text-slate-400">Author:</p>
 				<div class="flex justify-start">
 					<section class="flex justify-center items-center space-x-3">
 						<img
@@ -111,7 +174,7 @@
 			</div>
 
 			<div>
-				<p class="mb-1 text-sm text-slate-400">Discussion started:</p>
+				<p class="mb-1 text-sm text-slate-400">Written:</p>
 
 				<p>{moment(discussion.$createdAt).calendar()}</p>
 			</div>
@@ -120,12 +183,6 @@
 				<p class="mb-1 text-sm text-slate-400">Language:</p>
 
 				<p>{AppwriteService.getLanguageFromCode(discussion.languageCode)}</p>
-			</div>
-
-			<div>
-				<p class="mb-1 text-sm text-slate-400">Visibility:</p>
-
-				<p>{discussion.isPrivate ? 'Private' : 'Public'}</p>
 			</div>
 
 			<div>
@@ -163,6 +220,159 @@
 			>
 		</div>
 	{/if}
+
+	<hr class="my-6" />
+
+	<form
+		on:submit|preventDefault={submitComment}
+		class="p-6 bg-white rounded-lg border border-slate-200 shadow-md"
+	>
+		<h5 class="mb-4 text-2xl font-bold tracking-tight text-slate-900">Comment on Discussion:</h5>
+
+		{#if $accountStore}
+			<div
+				class="flex mb-3 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 "
+			>
+				<div class="w-full rounded-l-lg border-r border-gray-200">
+					<div class="flex items-center pl-5">
+						<input
+							bind:group={commentIsNegative}
+							value={false}
+							id="agree-yes"
+							type="radio"
+							required={true}
+							name="agree"
+							class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
+						/>
+						<label for="agree-yes" class="py-3 ml-2 w-full text-sm font-medium text-gray-900"
+							>I agree
+						</label>
+					</div>
+				</div>
+				<div class="w-full rounded-r-lg border-gray-200">
+					<div class="flex items-center pl-5">
+						<input
+							bind:group={commentIsNegative}
+							value={true}
+							id="agree-no"
+							type="radio"
+							required={true}
+							name="agree"
+							class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 "
+						/>
+						<label for="agree-no" class="py-3 ml-2 w-full text-sm font-medium text-gray-900 "
+							>I disagree</label
+						>
+					</div>
+				</div>
+			</div>
+
+			<textarea
+				bind:value={commentDescription}
+				id="comment-description"
+				maxlength="1024"
+				required={true}
+				rows="4"
+				class="block p-2.5 w-full text-sm text-slate-900 bg-slate-50 rounded-lg border border-slate-300 focus:ring-blue-500 focus:border-blue-500 "
+				placeholder="Your take on the topic ..."
+			/>
+
+			<div class="flex justify-end mt-3">
+				<button
+					type="submit"
+					class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0"
+					>Submit Comment</button
+				>
+			</div>
+		{:else}
+			<p class="mb-3 text-sm text-orange-500">Please login to write a comment.</p>
+		{/if}
+	</form>
+
+	<div class="mt-4 grid grid-cols-6 md:grid-cols-12 gap-4">
+		<div class="col-span-6">
+			<div
+				class="p-6 text-center flex items-center justify-center space-x-2 font-medium bg-green-100 text-green-700 rounded-lg border border-green-700 shadow-md"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="3"
+					stroke="currentColor"
+					class="w-4 h-4"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+					/>
+				</svg>
+
+				<p>We agree!</p>
+
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="3"
+					stroke="currentColor"
+					class="w-4 h-4"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+					/>
+				</svg>
+			</div>
+
+			<div class="mt-4">
+				<DiscussionList type="comment" typeData={`positive;${discussion.$id}`} />
+			</div>
+		</div>
+		<div class="col-span-6">
+			<div
+				class="p-6 text-center flex items-center justify-center space-x-2 font-medium bg-red-100 text-red-700 rounded-lg border border-red-700 shadow-md"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="3"
+					stroke="currentColor"
+					class="w-4 h-4 transform rotate-180"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+					/>
+				</svg>
+
+				<p>We disagree!</p>
+
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="3"
+					stroke="currentColor"
+					class="w-4 h-4 transform rotate-180"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 19.5v-15m0 0l-6.75 6.75M12 4.5l6.75 6.75"
+					/>
+				</svg>
+			</div>
+
+			<div class="mt-4">
+				<DiscussionList type="comment" typeData={`negative;${discussion.$id}`} />
+			</div>
+		</div>
+	</div>
 {/if}
 
 {#if showDeleteModal}

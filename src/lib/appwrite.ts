@@ -70,7 +70,7 @@ export const AppwriteService = {
         });
     },
 
-    createDiscussion: async (title: string, description: string, parentId: string = '_noParent', isPrivate: boolean, languageCode: string, isNegative: boolean, tags: string[]) => {
+    createDiscussion: async (title: string, description: string, parentId: string = '_noParent', languageCode: string, isNegative: boolean, tags: string[]) => {
         return await displayError(async () => {
             const user = await account.get();
             const userId = user.$id;
@@ -80,7 +80,6 @@ export const AppwriteService = {
                 title,
                 description,
                 parentId,
-                isPrivate,
                 isNegative,
                 tags,
                 tagsSearch: tags.join(" "),

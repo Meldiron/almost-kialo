@@ -7,11 +7,13 @@
 	let nickname = '';
 
 	onMount(() => {
-		nickname = $accountStore.prefs.profile.nickname ?? '';
+		nickname = $accountStore?.prefs?.profile?.nickname ?? '';
 	});
 
 	async function onSubmit() {
-		if (await AppwriteService.setProfile(nickname)) {
+		const res = await AppwriteService.setProfile(nickname);
+
+		if (res) {
 			goto('/');
 		}
 	}
