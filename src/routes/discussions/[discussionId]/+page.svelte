@@ -3,7 +3,8 @@
 
 	import { accountStore } from '$lib/accountStore';
 	import { AppwriteService } from '$lib/appwrite';
-	import * as moment from 'moment';
+
+	declare const moment: any;
 
 	import { onMount } from 'svelte';
 
