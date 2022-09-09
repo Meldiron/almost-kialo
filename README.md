@@ -1,15 +1,12 @@
 TODO:
 
-- Function to aggregate positive/negative on discussion
-- Search queries (tags) doesnt seem to work
+- Appwrite Function to aggregate positive/negative on discussion
+- Appwrite Function on document delete, to delete all sub-discussions
+- Search queries (tags) doesnt seem to work (index too)
 - Detail page for discussioin
-  - Start new discussion
-  - Detail about user (username, photo)
-  - When posted
-  - List comments + pagination
-  - Delete discussion (moderators can anyone, user can their only)
+  - Start new discussion (comment)
+  - List comments + pagination (reuse List component ideally, with small=true)
 - Add screenshots to readme
-- Users (and mods) can update discussions. Not sure how to disallow that
 
 # 💬 Almost Kialo
 
@@ -50,7 +47,8 @@ showcase amazing project that can be built using [Appwrite](https://appwrite.io/
 
 ## 🧑‍🚒 Administration
 
-1. Add trusted users to `mods` team. They can delete any discussion.
+1. Add trusted users to `mods` team. They can delete any discussion
+2. On trusted user, set `isMod=true` their prefs
 
 ## 🤖 Svelte Kit Generated Documentation
 

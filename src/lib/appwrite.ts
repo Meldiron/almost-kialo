@@ -64,6 +64,12 @@ export const AppwriteService = {
         });
     },
 
+    getProfile: async (userId: string) => {
+        return await displayError(async () => {
+            return await database.getDocument('main', 'profiles', userId);
+        });
+    },
+
     createDiscussion: async (title: string, description: string, parentId: string = '_noParent', isPrivate: boolean, languageCode: string, isNegative: boolean, tags: string[]) => {
         return await displayError(async () => {
             const user = await account.get();
@@ -93,6 +99,18 @@ export const AppwriteService = {
         });
     },
 
+    getDiscussion: async (id: string) => {
+        return await displayError(async () => {
+            return database.getDocument('main', 'discussions', id);
+        });
+    },
+
+    deleteDiscussion: async (id: string) => {
+        return await displayError(async () => {
+            return database.deleteDocument('main', 'discussions', id);
+        });
+    },
+
     getLanguageFromCode: (languageCode: string) => {
         const lang = (get(langsStore) ?? []).find((l) => l.code === languageCode);
         return lang?.name ?? 'Unknown';
@@ -119,6 +137,10 @@ export const AppwriteService = {
 
     getFlag: (country: string) => {
         return avatars.getFlag(country).toString();
+    },
+
+    getProfilePicture: (name: string) => {
+        return avatars.getInitials(name, 64, 64).toString();
     },
 
 };

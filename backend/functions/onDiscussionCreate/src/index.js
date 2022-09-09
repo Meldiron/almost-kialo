@@ -44,7 +44,10 @@ module.exports = async function (req, res) {
     tagsSearch: data.tags.join(" "),
     totalNegative: 0,
     totalPositive: 0
-  });
+  }, [
+    // This ensures proper permission on document. Update is not allowed
+    sdk.Permission.delete(sdk.Role.user(userId))
+  ]);
 
   console.log("🥳 Done");
 

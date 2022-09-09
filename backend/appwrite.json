@@ -41,9 +41,9 @@
         {
             "$id": "profiles",
             "$createdAt": "2022-09-07T17:42:30.706+00:00",
-            "$updatedAt": "2022-09-07T17:43:05.348+00:00",
+            "$updatedAt": "2022-09-09T06:09:44.659+00:00",
             "$permissions": [
-                "read(\"guests\")"
+                "read(\"any\")"
             ],
             "databaseId": "main",
             "name": "Profiles",
@@ -179,18 +179,7 @@
             ],
             "indexes": [
                 {
-                    "key": "languageCode",
-                    "type": "key",
-                    "status": "available",
-                    "attributes": [
-                        "languageCode"
-                    ],
-                    "orders": [
-                        "ASC"
-                    ]
-                },
-                {
-                    "key": "userId",
+                    "key": "myList",
                     "type": "key",
                     "status": "available",
                     "attributes": [
@@ -201,13 +190,45 @@
                     ]
                 },
                 {
-                    "key": "tagsSearch",
-                    "type": "fulltext",
+                    "key": "langList",
+                    "type": "key",
                     "status": "available",
                     "attributes": [
-                        "tagsSearch"
+                        "languageCode",
+                        "parentId",
+                        "isPrivate"
                     ],
                     "orders": [
+                        "ASC",
+                        "ASC",
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "homepagList",
+                    "type": "key",
+                    "status": "available",
+                    "attributes": [
+                        "parentId",
+                        "isPrivate"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "tagList",
+                    "type": "fulltext",
+                    "status": "failed",
+                    "attributes": [
+                        "tagsSearch",
+                        "parentId",
+                        "isPrivate"
+                    ],
+                    "orders": [
+                        "ASC",
+                        "ASC",
                         "ASC"
                     ]
                 }

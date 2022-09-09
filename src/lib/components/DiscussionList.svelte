@@ -31,11 +31,20 @@
 		}
 
 		if (type === 'lang') {
+			queries.push(Query.equal('parentId', '_noParent'));
+			queries.push(Query.equal('isPrivate', false));
 			queries.push(Query.equal('languageCode', typeData ?? ''));
 		}
 
 		if (type === 'tag') {
+			queries.push(Query.equal('isPrivate', false));
+			queries.push(Query.equal('parentId', '_noParent'));
 			queries.push(Query.search('tagsSearch', typeData ?? ''));
+		}
+
+		if (type === 'all') {
+			queries.push(Query.equal('isPrivate', false));
+			queries.push(Query.equal('parentId', '_noParent'));
 		}
 
 		if (cursor) {
@@ -61,26 +70,21 @@
 <div class="flex flex-col space-y-6">
 	{#each discussions as discussion}
 		<div id={discussion.$id} class="p-6 bg-white rounded-lg border border-slate-200 shadow-md">
-			<!--
-    <figcaption class="flex justify-center items-center space-x-3">
-        <img
-            class="w-9 h-9 rounded-full"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png"
-            alt="profile picture"
-        />
-        <div class="space-y-0.5 font-medium  text-left">
-            <div>Jese Leos</div>
-            <div class="text-sm font-light text-slate-500 ">Software Engineer at Facebook</div>
-        </div>
-    </figcaption>
-    -->
-
 			<div class="pb-4" style="line-height: 40px;">
+				{#if discussion.isPrivate}
+					<div
+						class="inline px-2 py-1.5 text-xs font-semibold bg-transparent text-orange-600 border border-orange-600 rounded-lg mr-2"
+					>
+						Private
+					</div>
+				{/if}
+
 				<a
 					href={`/langs/${discussion.languageCode}`}
 					class="inline px-2 py-1.5 text-xs font-semibold bg-slate-700 hover:bg-slate-800 text-slate-100 border border-slate-900 rounded-lg mr-2"
 					>{AppwriteService.getLanguageFromCode(discussion.languageCode)}</a
 				>
+
 				{#each discussion.tags as tag}
 					<a
 						href={`/tags/${tag}`}
@@ -90,7 +94,7 @@
 				{/each}
 			</div>
 
-			<a href={`/discussions/${discussion.$id}`}>
+			<a class="hover:underline" href={`/discussions/${discussion.$id}`}>
 				<h5 class="mb-2 text-2xl font-bold tracking-tight text-slate-900 line-clamp-1">
 					{discussion.title}
 				</h5>
