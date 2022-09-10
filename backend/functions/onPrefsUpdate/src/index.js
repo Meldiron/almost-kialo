@@ -19,9 +19,11 @@ module.exports = async function (req, res) {
   const data = JSON.parse(req.env['APPWRITE_FUNCTION_EVENT_DATA'] ?? '{}');
 
   const userId = data.$id;
-  const nickname = (data.prefs.profile.nickname ?? 'Anonymous').slice(0, 255);
 
   console.log("📝 User:", userId);
+
+  const nickname = (data.prefs?.profile?.nickname ?? 'Anonymous').slice(0, 255);
+
   console.log("📝 Nickname:", nickname);
 
   const database = new sdk.Databases(client);
