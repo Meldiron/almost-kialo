@@ -15,9 +15,19 @@
 
 	let discussions: any[] = [];
 
+	$: typeData, reloadPage();
+
 	onMount(async () => {
 		await loadPage();
 	});
+
+	async function reloadPage() {
+		cursor = null;
+		hasNextPage = true;
+		discussions = [];
+
+		await loadPage();
+	}
 
 	async function loadNextPage() {
 		cursor = discussions[discussions.length - 1].$id;
