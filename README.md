@@ -23,10 +23,11 @@ showcase amazing project that can be built using [Appwrite](https://appwrite.io/
 ## 🛠️ Setup
 
 1. Setup [Appwrite](https://appwrite.io/) 1.0
-2. Use [Appwrite CLI](https://appwrite.io/docs/command-line) and run `appwrite deploy collections` and `appwrite deploy functions`
-3. Create `Internal` API key, and configure `APPWRITE_FUNCTION_API_KEY` and `APPWRITE_FUNCTION_ENDPOINT` on all functions
-4. Create team `Moderators` with custom ID `mods`
-5. Configure GitHub OAuth
+2. Create project with ID `almostKialo`
+3. Use [Appwrite CLI](https://appwrite.io/docs/command-line) and run `appwrite deploy collections` and `appwrite deploy functions`, all inside `backend` folder
+4. Create `Internal` API key, and configure `APPWRITE_FUNCTION_API_KEY` and `APPWRITE_FUNCTION_ENDPOINT` on all functions
+5. Create team `Moderators` with custom ID `mods`
+6. Configure GitHub OAuth
 
 ## 🏠 Development
 
