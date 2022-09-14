@@ -17,10 +17,6 @@
 
 	$: typeData, reloadPage();
 
-	onMount(async () => {
-		await loadPage();
-	});
-
 	async function reloadPage() {
 		cursor = null;
 		hasNextPage = true;
