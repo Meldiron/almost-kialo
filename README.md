@@ -1,7 +1,3 @@
-TODO:
-
-- Search queries (tags) doesnt seem to work (index too)
-
 ![Almost Kialo Cover](static/cover.png)
 
 # 💬 Almost Kialo
