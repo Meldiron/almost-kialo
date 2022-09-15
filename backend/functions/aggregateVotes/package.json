@@ -10,6 +10,6 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"node-appwrite": "8.0.0-RC1"
+		"node-appwrite": "8.0.0"
 	}
 }

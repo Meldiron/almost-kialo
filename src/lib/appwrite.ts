@@ -9,7 +9,7 @@ import { langsStore } from "./langsStore";
 const client = new Client();
 
 client
-    .setEndpoint('https://matej10.appwrite.org/v1')
+    .setEndpoint('https://demo.appwrite.io/v1')
     .setProject('almostKialo');
 
 const account = new Account(client);
@@ -117,7 +117,7 @@ export const AppwriteService = {
 
     fetchLanguages: async () => {
         return await displayError(async () => {
-            const languages = (await locale.getLanguages()).languages;
+            const languages = (await locale.listLanguages()).languages;
             langsStore.set(languages);
         });
     },

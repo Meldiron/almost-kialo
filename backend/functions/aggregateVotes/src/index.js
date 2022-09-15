@@ -3,13 +3,12 @@ const sdk = require("node-appwrite");
 /*
   'req' variable has:
     'headers' - object with request headers
-    'payload' - object with request body data
-    'env' - object with environment variables
+    'payload' - request body data as a string
+    'variables' - object with function variables
 
   'res' variable has:
     'send(text, status)' - function to return text response. Status code defaults to 200
     'json(obj, status)' - function to return JSON response. Status code defaults to 200
-
   If an error is thrown, a response with code 500 will be returned.
 */
 
@@ -21,15 +20,15 @@ module.exports = async function (req, res) {
   const database = new sdk.Databases(client);
 
   if (
-    !req.env['APPWRITE_FUNCTION_ENDPOINT'] ||
-    !req.env['APPWRITE_FUNCTION_API_KEY']
+    !req.variables['APPWRITE_FUNCTION_ENDPOINT'] ||
+    !req.variables['APPWRITE_FUNCTION_API_KEY']
   ) {
     console.warn("⚠️ Environment variables are not set. Function cannot use Appwrite SDK.");
   } else {
     client
-      .setEndpoint(req.env['APPWRITE_FUNCTION_ENDPOINT'])
-      .setProject(req.env['APPWRITE_FUNCTION_PROJECT_ID'])
-      .setKey(req.env['APPWRITE_FUNCTION_API_KEY']);
+      .setEndpoint(req.variables['APPWRITE_FUNCTION_ENDPOINT'])
+      .setProject(req.variables['APPWRITE_FUNCTION_PROJECT_ID'])
+      .setKey(req.variables['APPWRITE_FUNCTION_API_KEY']);
   }
 
   console.log("🤖 Getting all discussions ...");
