@@ -19,9 +19,13 @@ module.exports = async function (req, res) {
 
   const userId = req.variables['APPWRITE_FUNCTION_USER_ID'];
   const discussionId = data.$id;
+  const parentDiscussionId = data.parentId;
+  const isNegative = data.isNegative;
 
   console.log("📝 User:", userId);
   console.log("📝 Discussion:", discussionId);
+  console.log("📝 Parent ID:", parentDiscussionId);
+  console.log("📝 Is negative:", isNegative);
 
   const database = new sdk.Databases(client);
 
@@ -48,6 +52,37 @@ module.exports = async function (req, res) {
     sdk.Permission.delete(sdk.Role.user(userId)),
     sdk.Permission.read(sdk.Role.user(userId)), // Read needed because of bug in Appwrite - to delete, you also need read when documentSecurity=true
   ]);
+
+  if (parentDiscussionId !== '_noParent') {
+    console.log("🤖 Aggregating votes ...");
+
+    async function aggregateParent(parentId, depth = 0) {
+      if (depth > 100) {
+        console.log("🤖 Stopping aggregation at depth 100.");
+        return;
+      }
+
+      const parentDocument = await database.getDocument("main", "discussions", parentId);
+
+      if (isNegative) {
+        await database.updateDocument("main", "discussions", parentId, {
+          totalNegative: parentDocument.totalNegative + 1
+        });
+      } else {
+        await database.updateDocument("main", "discussions", parentId, {
+          totalPositive: parentDocument.totalPositive + 1
+        });
+      }
+
+      if (parentDocument.parentId !== '_noParent') {
+        await aggregateParent(parentDocument.parentId, depth + 1);
+      }
+    }
+
+    await aggregateParent(parentDiscussionId);
+  } else {
+    console.log("🤖 No parent - no votes to aggregate ...");
+  }
 
   console.log("🥳 Done");
 

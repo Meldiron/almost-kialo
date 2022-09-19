@@ -65,8 +65,8 @@
             ],
             "execute": [],
             "events": [],
-            "schedule": "*/5 * * * *",
-            "timeout": 15
+            "schedule": "* * * * *",
+            "timeout": 60
         }
     ],
     "collections": [
