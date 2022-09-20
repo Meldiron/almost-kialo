@@ -9,7 +9,7 @@ import { langsStore } from "./langsStore";
 const client = new Client();
 
 client
-    .setEndpoint('https://demo.appwrite.io/v1')
+    .setEndpoint('https://appwrite.almost-kialo.matejbaco.eu/v1')
     .setProject('almostKialo');
 
 const account = new Account(client);
