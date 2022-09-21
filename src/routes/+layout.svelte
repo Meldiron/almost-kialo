@@ -290,15 +290,17 @@
 		</ul>
 	</footer>
 
-	<div class="flex justify-center mb-6">
-		<button
-			on:click={AppwriteService.logout}
-			type="button"
-			class="hover:underline text-sm font-medium text-slate-500 inline-flex items-center"
-		>
-			Sign Out
-		</button>
-	</div>
+	{#if $accountStore !== null}
+		<div class="flex justify-center mb-6">
+			<button
+				on:click={AppwriteService.logout}
+				type="button"
+				class="hover:underline text-sm font-medium text-slate-500 inline-flex items-center"
+			>
+				Sign Out
+			</button>
+		</div>
+	{/if}
 </div>
 
 {#if $loadingStore}
