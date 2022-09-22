@@ -1,6 +1,6 @@
 {
     "projectId": "almostKialo",
-    "projectName": "Almost Kialo",
+    "projectName": "Almost Kialo V1",
     "functions": [
         {
             "$id": "onPrefsUpdate",
