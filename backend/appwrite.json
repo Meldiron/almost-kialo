@@ -65,7 +65,7 @@
             ],
             "execute": [],
             "events": [],
-            "schedule": "* * * * *",
+            "schedule": "0 * * * *",
             "timeout": 60
         }
     ],
