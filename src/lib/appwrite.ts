@@ -6,7 +6,7 @@ import { page } from "$app/stores";
 import { get } from "svelte/store";
 import { langsStore } from "./langsStore";
 
-const endpoint = 'https://backend.kialo.almostapps.eu/';
+const endpoint = 'https://backend.kialo.almostapps.eu/v1';
 
 const client = new Client();
 
