@@ -6,10 +6,12 @@ import { page } from "$app/stores";
 import { get } from "svelte/store";
 import { langsStore } from "./langsStore";
 
+const endpoint = 'https://backend.kialo.almostapps.eu/';
+
 const client = new Client();
 
 client
-    .setEndpoint('https://appwrite.almost-kialo.matejbaco.eu/v1')
+    .setEndpoint(endpoint)
     .setProject('almostKialo');
 
 const account = new Account(client);

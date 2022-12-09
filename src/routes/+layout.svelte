@@ -255,7 +255,7 @@
 		class="mb-6 p-4 bg-white rounded-lg shadow md:flex md:items-center md:justify-between md:p-6"
 	>
 		<span class="text-sm text-slate-500 sm:text-center"
-			>Made with ♥️ and <a href="https://appwrite.io/">
+			>Made with 💖 and <a href="https://appwrite.io/">
 				<svg
 					class="w-[24px] mt-[-5px] inline animate-bounce"
 					width="30"
@@ -277,8 +277,7 @@
 						fill="#F02E65"
 					/>
 				</svg>
-			</a>
-			by <a href="https://matejbaco.eu/" class="hover:underline">Matej Bačo</a>.
+			</a>. Contact: <a href="mailto:contact@almostapps.eu" class="hover:underline">contact@almostapps.eu</a>
 		</span>
 		<ul class="flex flex-wrap items-center mt-3 text-sm text-slate-500 sm:mt-0">
 			<li>

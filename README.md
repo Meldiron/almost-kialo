@@ -2,17 +2,7 @@
 
 # 💬 Almost Kialo
 
-> It's like an online argument where only valid points get attention!
-
-Almost Kialo is a social platform where you can ask <b>ANYTHING</b>! Others can express
-themselves by either agreeing or disagreeing with you. Pick a side based on constructive
-comments that describe their reasoning. Don't worry about unmeaningful hate! Each comment
-creates a separate discussion that can be commented on too! A comment that no one agrees with is
-pushed down the list and becomes irrelevant.
-
-Idea for this project came from real project [Kialo](https://www.kialo.com/). Check them out, they are the same thing but much more sophisticated! We are in no way
-affiliated or connected to Kialo website. This application came into existance as a way to
-showcase amazing project that can be built using [Appwrite](https://appwrite.io/).
+> It's like an online argument where only valid points get attention!.
 
 ## 🧰 Tech Stack
 
@@ -20,29 +10,38 @@ showcase amazing project that can be built using [Appwrite](https://appwrite.io/
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Svelte Kit](https://kit.svelte.dev/)
 
-## 🛠️ Setup
+## 🛠️ Setup Server
 
-1. Setup [Appwrite](https://appwrite.io/) 1.0
-2. Create project with ID `almostKialo`
-3. Use [Appwrite CLI](https://appwrite.io/docs/command-line) and run `appwrite deploy collection --all` and `appwrite deploy function --all`, all inside `backend` folder
-4. Create `Internal` API key (give all scopes), and configure `APPWRITE_FUNCTION_API_KEY` and `APPWRITE_FUNCTION_ENDPOINT` on all functions
-5. Create team `Moderators` with custom ID `mods`
-6. Disable all auth methods
-7. Enable and configure GitHub OAuth
+1. Setup Appwrite server
+2. Create project `almostKialo`
+3. Install Appwrite CLI
+4. Login with `appwrite login`
+5. Enter `cd backend`
+6. Deploy database structure with `appwrite deploy collection`
+7. Deploy database seeds with `sh seed.sh`
+8. Deploy functions with `appwrite deploy function`
+9. Set variables on deployed functions. There is `backend/functions` folder for each function. They all have `README.md` describing what variables they need
+10. Setup `GitHub` OAuth provider
 
-## 🏠 Development
+## 👀 Setup Client
 
-1. Install dependencies `npm install`
-2. Start Svelte Kit server `npm run dev`
+1. Install libarries `npm install`
+2. Update `endpoint` in `src/lib/appwrite.ts` (Appwrite endpoint from server setup)
+3. Start server `npm run dev`
 
-## 🚀 Production
+## 🚀 Deploy client
 
-1. Build project `npm run build`
+1. Deploy frontend and backend on the same domain. For example, `myapp.com` and `appwrite.myapp.com`
+2. Add frontend hostname as a platform in Appwrite project
 
-## 🧑‍🚒 Administration
+## 🚨 Setup Moderation
 
 1. Add trusted users to `mods` team. They can delete any discussion
 2. On trusted user, set `isMod=true` their prefs
+
+## 🤝 Contributing
+
+When contributing to backend-related logic, make sure to sync-up `backend/appwrite.json` by running the `appwrite init` commands in the `backend` folder.
 
 ## 🖼️ Screenshots
 
