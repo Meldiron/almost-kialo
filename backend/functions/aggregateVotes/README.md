@@ -4,23 +4,17 @@ Welcome to the documentation of this function 👋 We strongly recommend keeping
 
 ## 🤖 Documentation
 
-Simple function similar to typical "hello world" example, but instead, we return a simple JSON that tells everyone how awesome developers are.
-
-<!-- Update with your description, for example 'Create Stripe payment and return payment URL' -->
+Schedule-triggered function that aggregates amount of positive and negative sub-discussions. It runs every hour.
 
 _Example input:_
 
-This function expects no input
-
-<!-- If input is expected, add example -->
+This function expects no input.
 
 _Example output:_
 
-<!-- Update with your expected output -->
-
 ```json
 {
- "areDevelopersAwesome": true
+ "done": true
 }
 ```
 
@@ -30,7 +24,6 @@ List of environment variables used by this cloud function:
 
 - **APPWRITE_FUNCTION_ENDPOINT** - Endpoint of Appwrite project
 - **APPWRITE_FUNCTION_API_KEY** - Appwrite API Key
-<!-- Add your custom environment variables -->
 
 ## 🚀 Deployment
 
