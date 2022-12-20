@@ -1,8 +1,10 @@
-![Almost Kialo Cover](static/cover.png)
+![Almost Cover](static/cover.png)
 
 # 💬 Almost Kialo
 
-> It's like an online argument where only valid points get attention!.
+> Debate where only valid comments get attention.
+
+![Almost Icon](static/favicon.png)
 
 ## 🧰 Tech Stack
 

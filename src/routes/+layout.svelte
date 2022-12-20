@@ -128,7 +128,7 @@
 <nav class="bg-white border-slate-200 px-2 sm:px-4 py-2.5 shadow-sm">
 	<div class="max-w-3xl flex flex-wrap justify-between items-center gap-y-3 mx-auto">
 		<a href="/" class="flex items-center sm:mb-0">
-			<img src="/logo.svg" class="mr-3 h-6 sm:h-9" alt="Almost Kialo Logo" />
+			<img src="/favicon.png" class="mr-3 h-6 sm:h-9" alt="Almost Kialo Logo" />
 
 			<span class="self-center text-xl font-semibold whitespace-nowrap">Almost Kialo</span>
 		</a>

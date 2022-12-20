@@ -6,7 +6,7 @@
 	</h1>
 
 	<p class="text-lg font-normal text-slate-500 lg:text-xl text-center">
-		It's like an online argument where only valid points get attention!
+		Debate where only valid comments get attention.
 	</p>
 
 	<div class="h-1 bg-slate-200 rounded-full" />
